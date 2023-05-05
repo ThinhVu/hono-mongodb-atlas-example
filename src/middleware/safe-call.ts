@@ -6,11 +6,10 @@ type SafeCallHandler = (c: Context) => Promise<any>;
 type SafeCallResponse = (c: Context) => Promise<void>;
 
 export default function safeCall(fn: SafeCallHandler): SafeCallResponse  {
-   return async (c: Context) => {
+   return async (c: Context) : Promise<any> => {
       try {
          const rs = await storage.run({c}, () => fn(c))
-         console.log('rs', rs)
-         c.json({data: rs}) // <- finalize but somehow not work
+         return c.json({data: rs})
       } catch(e) {
          handleApiError(e, c);
       }
